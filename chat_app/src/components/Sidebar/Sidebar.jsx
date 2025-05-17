@@ -8,11 +8,22 @@ export const Sidebar = ({ onNewChat, onSelectChat }) => {
   const [chatIds, setChatIds] = useState([]);
 
   const API = "http://localhost:3600";
-  useEffect(() => {
+
+  const fetchChatIds = () => {
     axios.get(`${API}/api/chatIds`)
       .then(res => setChatIds(res.data))
       .catch(err => console.error("Failed to load chat list", err));
-    }, []);
+  };
+
+  useEffect(() => {
+    fetchChatIds();
+
+    const interval = setInterval(() => {
+      fetchChatIds(); 
+    }, 5000);
+
+    return () => clearInterval(interval); 
+  }, []);
 
   return (
     

@@ -9,11 +9,10 @@ import axios from 'axios';
 
 function App() {
   const [chatId, setChatId] = useState(uuidv4());
-  const [oldChat, setOldChat] = useState([]);
+  const [oldChat, setOldChat] = useState(0);
 
   const startNewChat = () => {
     setChatId(uuidv4());
-    // setOldChat([]);
     setOldChat(0);
   };
   const handleSelectChat = (id) => {

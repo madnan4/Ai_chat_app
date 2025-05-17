@@ -8,7 +8,10 @@ export const MainContent = ({ chatId, oldChat }) => {
   const API = 'http://localhost:3600';
 
   useEffect(() => {
-    if (oldChat !=1) return;
+    if (oldChat === 0) {
+      setMessages([]);
+      return;
+    }
     axios.get(`${API}/api/chat/${chatId}`)
       .then(res => setMessages(res.data))
       .catch(err => {
@@ -16,11 +19,6 @@ export const MainContent = ({ chatId, oldChat }) => {
         setMessages([]);
       });
   }, [chatId]);
-
-  const sendMessageToOpenAI = async (messages) => {
-    const response = await axios.post(`${API}/api/chat`, { messages, chatId });
-    return response.data.reply;
-  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -35,9 +33,9 @@ export const MainContent = ({ chatId, oldChat }) => {
       const updatedMessages = [...messages, userMessage];
       setMessages(updatedMessages);
       setInputValue("");
-
+  
       try {
-        const aiResponse = await sendMessageToOpenAI(updatedMessages);
+        const aiResponse = await sendMessageToOpenAI(userMessage);
         const aiMessage = { sender: "assistant", text: aiResponse };
         setMessages((prev) => [...prev, aiMessage]);
       } catch (error) {
@@ -46,6 +44,14 @@ export const MainContent = ({ chatId, oldChat }) => {
       }
     }
   };
+  const sendMessageToOpenAI = async (newUserMessage) => {
+    const response = await axios.post(`${API}/api/chat`, {
+      newUserMessage,
+      chatId,
+    });
+    return response.data.reply;
+  };
+  
 
   return (
     <section className={styles.mainContent}>
